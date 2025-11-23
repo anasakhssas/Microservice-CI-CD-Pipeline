@@ -1,0 +1,37 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+  TAG: $CI_COMMIT_SHORT_SHA
+
+test:
+  stage: test
+  image: python:3.9
+  script:
+    - pip install -r app/src/requirements.txt
+    - pytest app/tests
+  artifacts:
+    paths:
+      - app/tests/reports/
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t $IMAGE_NAME:$TAG app/
+    - docker push $IMAGE_NAME:$TAG
+
+deploy:
+  stage: deploy
+  image: kubectl:latest
+  script:
+    - kubectl apply -f k8s/deployment.yaml
+    - kubectl apply -f k8s/service.yaml
+    - kubectl apply -f k8s/ingress.yaml
+  only:
+    - main

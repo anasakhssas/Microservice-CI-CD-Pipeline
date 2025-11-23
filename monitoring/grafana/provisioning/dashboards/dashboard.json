@@ -1,0 +1,94 @@
+{
+  "annotations": [],
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "type": "graph",
+      "title": "Service Request Rate",
+      "targets": [
+        {
+          "expr": "rate(http_requests_total[5m])",
+          "legendFormat": "{{method}} {{status}}",
+          "refId": "A"
+        }
+      ],
+      "xaxis": {
+        "mode": "time"
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Requests per second",
+          "logBase": 1,
+          "min": 0
+        },
+        {
+          "format": "short",
+          "label": "Requests per second",
+          "logBase": 1,
+          "min": 0
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "type": "graph",
+      "title": "Service Error Rate",
+      "targets": [
+        {
+          "expr": "rate(http_requests_total{status=~\"5..\"}[5m])",
+          "legendFormat": "{{method}}",
+          "refId": "B"
+        }
+      ],
+      "xaxis": {
+        "mode": "time"
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Errors per second",
+          "logBase": 1,
+          "min": 0
+        },
+        {
+          "format": "short",
+          "label": "Errors per second",
+          "logBase": 1,
+          "min": 0
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "type": "graph",
+      "title": "Service Latency",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "95th percentile",
+          "refId": "C"
+        }
+      ],
+      "xaxis": {
+        "mode": "time"
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": "Latency (s)",
+          "logBase": 1,
+          "min": 0
+        },
+        {
+          "format": "s",
+          "label": "Latency (s)",
+          "logBase": 1,
+          "min": 0
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 26,
+  "version": 1
+}
